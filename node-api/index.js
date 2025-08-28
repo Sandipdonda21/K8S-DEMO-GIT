@@ -21,7 +21,22 @@ const config = {
 
 // Connect to SQL Server
 sql.connect(config)
-  .then(pool => {
+  .then(async (pool) => {
+
+    console.log('Connected to SQL Server');
+
+    await pool.request().query(`
+      IF NOT EXISTS (
+        SELECT * FROM INFORMATION_SCHEMA.TABLES 
+        WHERE TABLE_NAME = 'todos'
+      )
+      BEGIN
+        CREATE TABLE todos (
+          id INT IDENTITY(1,1) PRIMARY KEY,
+          text NVARCHAR(255) NOT NULL
+        )
+      END
+    `);
 
     // Get all todos
     app.get('/api/todos', async (req, res) => {
