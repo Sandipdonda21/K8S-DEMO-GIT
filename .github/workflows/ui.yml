@@ -1,5 +1,9 @@
 name: Build and Push React UI to ACR
 
+permissions:
+  id-token: write
+  contents: read
+
 on:
   push:
     paths:
