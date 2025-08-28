@@ -22,7 +22,6 @@ const config = {
 // Connect to SQL Server
 sql.connect(config)
   .then(pool => {
-    // CRUD Operations
 
     // Get all todos
     app.get('/api/todos', async (req, res) => {
