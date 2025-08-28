@@ -3,9 +3,8 @@ const sql = require('mssql');
 const app = express();
 const cors = require('cors');
 
-app.use(cors());  // Add this line
+app.use(cors());
 
-// Middleware
 app.use(express.json());
 
 // SQL Server Config
