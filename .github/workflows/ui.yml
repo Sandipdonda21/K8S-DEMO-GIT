@@ -31,3 +31,7 @@ jobs:
         docker build -t $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG ./todo-list
         az acr login --name ${{ secrets.ACR_NAME }}
         docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
+
+        # Also tag and push as "latest"
+        docker tag $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
+        docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
