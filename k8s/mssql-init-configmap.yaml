@@ -1,0 +1,13 @@
+# mssql-init-configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mssql-init-script
+data:
+  init.sql: |
+    USE TodoDb;
+    IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'sa')
+    BEGIN
+        CREATE USER [sa] FOR LOGIN [sa];
+    END;
+    ALTER ROLE db_owner ADD MEMBER [sa];
