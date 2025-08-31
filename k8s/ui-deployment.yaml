@@ -4,8 +4,6 @@ metadata:
   name: react-ui
   namespace: todo-app
 spec:
-  imagepullsecrets:
-    - name: acr-secret
   replicas: 1
   selector:
     matchLabels:
@@ -15,6 +13,8 @@ spec:
       labels:
         app: react-ui
     spec:
+      imagepullsecrets:
+      - name: acr-secret
       containers:
       - name: react-ui
         image: k8sdemoproject.azurecr.io/react-ui:latest
