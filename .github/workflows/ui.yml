@@ -30,7 +30,7 @@ jobs:
 
     - name: Build and Push Docker image
       run: |
-        docker build --build-arg REACT_APP_API_URL=http://node-api.todo-app.svc.cluster.local:5000 -t $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG ./todo-list
+        docker build --build-arg REACT_APP_API_URL=/api -t $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG ./todo-list
         docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG
 
         # Also tag and push as "latest"
