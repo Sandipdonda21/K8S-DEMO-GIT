@@ -6,13 +6,13 @@ function TodoApp() {
   const [newTodo, setNewTodo] = useState('');
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/api/todos`)
+    axios.get(`${process.env.REACT_APP_API_URL}/todos`)
       .then(response => setTodos(response.data))
       .catch(error => console.error('There was an error fetching the to-dos!', error));
   }, []);
 
   const handleAddTodo = () => {
-    axios.post(`${process.env.REACT_APP_API_URL}/api/todos`, { text: newTodo })
+    axios.post(`${process.env.REACT_APP_API_URL}/todos`, { text: newTodo })
       .then(response => {
         setTodos([...todos, response.data]);
         setNewTodo('');
@@ -21,7 +21,7 @@ function TodoApp() {
   };
 
   const handleDeleteTodo = (id) => {
-    axios.delete(`${process.env.REACT_APP_API_URL}/api/todos/${id}`)
+    axios.delete(`${process.env.REACT_APP_API_URL}/todos/${id}`)
       .then(() => {
         setTodos(todos.filter(todo => todo.id !== id));
       })
