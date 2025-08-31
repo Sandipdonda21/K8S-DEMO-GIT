@@ -13,13 +13,13 @@ spec:
       labels:
         app: node-api
     spec:
+      imagePullSecrets:
+        - name: acr-secret
       containers:
       - name: node-api
         image: k8sdemoproject.azurecr.io/node-api:latest
         ports:
         - containerPort: 5000
-        imagePullSecrets:
-        - name: acr-secret
         env:
         - name: DB_HOST
           valueFrom:
