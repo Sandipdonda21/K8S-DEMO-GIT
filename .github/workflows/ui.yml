@@ -36,3 +36,15 @@ jobs:
         # Also tag and push as "latest"
         docker tag $ACR_LOGIN_SERVER/$IMAGE_NAME:$IMAGE_TAG $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
         docker push $ACR_LOGIN_SERVER/$IMAGE_NAME:latest
+      
+    - name: Update deployment.yaml with new image tag
+      run: |
+        # Update the deployment.yaml file to use the new image tag
+        sed -i "s|image: k8sdemoproject.azurecr.io/$IMAGE_NAME:.*|image: k8sdemoproject.azurecr.io/$IMAGE_NAME:$IMAGE_TAG|" k8s/ui-deployment.yaml
+        
+        # Commit the updated deployment.yaml file to the Git repository
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add k8s/ui-deployment.yaml
+        git commit -m "Update React UI image tag to $IMAGE_TAG"
+        git push
