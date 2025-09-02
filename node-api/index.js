@@ -33,7 +33,7 @@ const todoConfig = {
 
 const client = redis.createClient({
   socket: {
-    host: '/redis',
+    host: 'redis',
     port: 6379,
     tls: true,
   },
