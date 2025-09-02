@@ -17,7 +17,7 @@ spec:
         - name: acr-secret
       containers:
       - name: node-api
-        image: k8sdemoproject.azurecr.io/node-api:latest
+        image: k8sdemoproject.azurecr.io/node-api:14
         ports:
         - containerPort: 5000
         env:
