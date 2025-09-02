@@ -30,6 +30,17 @@ const todoConfig = {
     }
 };
 
+const client = redis.createClient({
+  socket: {
+    host: '/redis',
+    port: 6379,
+    tls: true,
+  },
+  password: process.env.REDIS_PASSWORD,
+});
+
+client.connect().catch(console.error);
+
 async function initializeDatabase() {
   try {
     // First, connect to master to create database
@@ -84,7 +95,15 @@ initializeDatabase()
     // Get all todos
     app.get('/api/todos', async (req, res) => {
       try {
+        const cachedData = await client.get(`todos`);
+        if (cachedData) {
+          console.log("Cache hit");
+          return res.json(JSON.parse(cachedData));
+        }
         const result = await pool.request().query('SELECT * FROM todos');
+
+        await client.setEx(`todos`, 60, JSON.stringify(result));
+
         res.json(result.recordset);
       } catch (err) {
         console.error('Error fetching todos:', err);
@@ -100,6 +119,8 @@ initializeDatabase()
           .input('text', sql.NVarChar, text)
           .query('INSERT INTO todos (text) OUTPUT INSERTED.* VALUES (@text)');
         res.json(result.recordset[0]);
+
+        await client.del(`todos`);
       } catch (err) {
         console.error('Error adding todo:', err);
         res.status(500).json({ error: 'Failed to add todo' });
@@ -114,6 +135,8 @@ initializeDatabase()
           .input('id', sql.Int, id)
           .query('DELETE FROM todos WHERE id = @id');
         res.sendStatus(200);
+
+        await client.del(`todos`);
       } catch (err) {
         console.error('Error deleting todo:', err);
         res.status(500).json({ error: 'Failed to delete todo' });
