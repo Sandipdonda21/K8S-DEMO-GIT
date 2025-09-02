@@ -1,0 +1,7 @@
+apiVersion: v2
+name: todo-app
+description: A Todo application with React UI, Node.js API, Redis, and SQL Server
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+dependencies: []

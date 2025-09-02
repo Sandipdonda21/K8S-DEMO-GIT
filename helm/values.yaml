@@ -1,0 +1,95 @@
+# Global values
+global:
+  namespace: todo-app
+
+# Namespace
+namespace:
+  create: true
+  name: todo-app
+
+# SQL Server Configuration
+mssql:
+  enabled: true
+  image:
+    repository: mcr.microsoft.com/mssql/server
+    tag: 2022-latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 1433
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClass: default
+    accessMode: ReadWriteOnce
+  secrets:
+    saPassword: U2FuZGlwQDEyMw==
+    dbName: TodoDb
+    dbHost: mssql-service.todo-app.svc.cluster.local
+    dbUser: sa
+    dbPassword: U2FuZGlwQDEyMw==
+    requests:
+      memory: "2Gi"
+      cpu: "1000m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+
+# Redis Configuration
+redis:
+  enabled: true
+  image:
+    repository: redis
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 6379
+  secrets:
+    password: "password"
+
+# API Configuration
+api:
+  enabled: true
+  image:
+    repository: k8sdemoproject.azurecr.io/node-api
+    tag: 14
+    pullPolicy: Always
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 5000
+
+# UI Configuration
+ui:
+  enabled: true
+  image:
+    repository: k8sdemoproject.azurecr.io/react-ui
+    tag: 13
+    pullPolicy: Always
+  replicaCount: 1
+  service:
+    type: ClusterIP
+    port: 80
+
+# Ingress Configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  hosts:
+      paths:
+        - path: /api
+          pathType: Prefix
+          backend:
+          service:
+            name: node-api
+            port:
+              number: 5000
+        - path: /
+          pathType: Prefix
+          backend:
+            service:
+              name: react-ui
+              port:
+                number: 80
+  tls: []
