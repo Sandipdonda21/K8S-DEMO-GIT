@@ -31,4 +31,5 @@ spec:
           mountPath: /var/opt/mssql
       volumes:
       - name: mssql-storage
-        emptyDir: {}
+        persistentVolumeClaim:
+          claimName: mssql-pvc
