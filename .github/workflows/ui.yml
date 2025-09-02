@@ -1,7 +1,6 @@
 name: Build and Push React UI to ACR
 
 permissions:
-  contents: read
   contents: write
 
 on:
