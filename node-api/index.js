@@ -44,6 +44,7 @@ client.connect().catch(err => {
   process.exit(1); // Exit the app if Redis connection fails
 });
 
+
 // Optionally, check the Redis connection
 client.ping().then(() => {
   console.log("Connected to Redis successfully");
