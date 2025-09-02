@@ -17,6 +17,6 @@ spec:
       - name: acr-secret
       containers:
       - name: react-ui
-        image: k8sdemoproject.azurecr.io/react-ui:latest
+        image: k8sdemoproject.azurecr.io/react-ui:13
         ports:
         - containerPort: 80
