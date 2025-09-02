@@ -115,7 +115,7 @@ initializeDatabase()
         const result = await pool.request().query('SELECT * FROM todos');
         console.log('Fetched todos from DB:', result.recordset);
 
-        await client.setEx(`todos`, 60, JSON.stringify(result));
+        await client.setEx(`todos`, 60, JSON.stringify(result.recordsets[0]));
 
         res.json(result.recordset);
       } catch (err) {
