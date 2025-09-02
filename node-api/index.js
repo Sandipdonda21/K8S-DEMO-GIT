@@ -97,6 +97,8 @@ async function initializeDatabase() {
   }
 }
 
+console.log('Redis Password:', process.env.REDIS_PASSWORD);
+
 // Initialize database and start server
 initializeDatabase()
   .then((pool) => {
