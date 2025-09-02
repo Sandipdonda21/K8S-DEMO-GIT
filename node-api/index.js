@@ -97,8 +97,6 @@ async function initializeDatabase() {
   }
 }
 
-console.log('Redis Password:', process.env.REDIS_PASSWORD);
-
 // Initialize database and start server
 initializeDatabase()
   .then((pool) => {
@@ -109,7 +107,6 @@ initializeDatabase()
       try {
         const cachedData = await client.get(`todos`);
         if (cachedData) {
-          console.log("Cache hit");
           return res.json(JSON.parse(cachedData));
         }
         const result = await pool.request().query('SELECT * FROM todos');
