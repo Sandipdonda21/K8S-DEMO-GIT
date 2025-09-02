@@ -41,3 +41,8 @@ spec:
             secretKeyRef:
               name: mssql-secret
               key: DB_NAME
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: redis-secret
+              key: REDIS_PASSWORD
