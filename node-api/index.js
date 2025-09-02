@@ -2,6 +2,7 @@ const express = require('express');
 const sql = require('mssql');
 const app = express();
 const cors = require('cors');
+const redis = require('redis');
 
 app.use(cors());
 app.use(express.json());
