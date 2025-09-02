@@ -41,6 +41,6 @@ jobs:
         # Commit the updated deployment.yaml file to the Git repository
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        git add k8s/ui-deployment.yaml
-        git commit -m "Update React UI image tag to $IMAGE_TAG"
+        git add k8s/api-deployment.yaml
+        git commit -m "Update API image tag to $IMAGE_TAG"
         git push
