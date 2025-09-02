@@ -39,7 +39,17 @@ const client = redis.createClient({
   password: process.env.REDIS_PASSWORD,
 });
 
-client.connect().catch(console.error);
+client.connect().catch(err => {
+  console.error("Failed to connect to Redis:", err);
+  process.exit(1); // Exit the app if Redis connection fails
+});
+
+// Optionally, check the Redis connection
+client.ping().then(() => {
+  console.log("Connected to Redis successfully");
+}).catch(err => {
+  console.error("Redis ping failed:", err);
+});
 
 async function initializeDatabase() {
   try {
@@ -101,6 +111,7 @@ initializeDatabase()
           return res.json(JSON.parse(cachedData));
         }
         const result = await pool.request().query('SELECT * FROM todos');
+        console.log('Fetched todos from DB:', result.recordset);
 
         await client.setEx(`todos`, 60, JSON.stringify(result));
 
