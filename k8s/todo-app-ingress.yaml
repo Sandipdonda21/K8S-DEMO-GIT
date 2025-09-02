@@ -22,10 +22,3 @@ spec:
             name: react-ui
             port:
               number: 80
-      - path: /redis
-        pathType: Prefix
-        backend:
-          service:
-            name: redis
-            port:
-              number: 6379
