@@ -194,3 +194,61 @@ spec:
 ---
 
 This README intentionally excludes the `helm/` folder until it is tested.
+
+## CI/CD with GitHub Actions (ACR + AKS)
+
+Set the following GitHub repository Secrets (Settings → Secrets and variables → Actions → New repository secret):
+
+- `AZURE_CREDENTIALS` → Output JSON from `az ad sp create-for-rbac` (or `az aks get-credentials` workflow creds)
+- `AZURE_TENANT_ID` → Your Azure AD tenant ID (if not embedded in `AZURE_CREDENTIALS`)
+- `AZURE_SUBSCRIPTION_ID` → Your subscription ID (if not embedded in `AZURE_CREDENTIALS`)
+- `AZURE_RESOURCE_GROUP` → Resource group for AKS/ACR
+- `AZURE_AKS_NAME` → AKS cluster name
+- `AZURE_AKS_NAMESPACE` → `todo-app`
+- `AZURE_ACR_NAME` → ACR name (without `.azurecr.io`)
+- `AZURE_ACR_LOGIN_SERVER` → e.g. `k8sdemoproject.azurecr.io`
+- `AZURE_ACR_USERNAME` → ACR username (optional if using `az acr login` with SP)
+- `AZURE_ACR_PASSWORD` → ACR password (optional if using `az acr login` with SP)
+
+Typical GitHub Actions jobs will:
+- Check out code
+- Log in to Azure and ACR
+- Build and push images for `node-api` and `todo-list`
+- Set Kubernetes context to AKS
+- `kubectl apply -f k8s/`
+
+> Note: Ensure your workflow references the secrets above and tags images consistently with what is referenced in `k8s/api-deployment.yaml` and `k8s/ui-deployment.yaml`.
+
+### Create ACR imagePullSecret in Kubernetes (before Argo CD sync)
+
+Before linking this repo to Argo CD or applying manifests, create an image pull secret that your Deployments reference as `acr-secret` in the `todo-app` namespace (and optionally in `default` if needed):
+
+```bash
+kubectl create secret docker-registry <secret-name> \
+    --namespace <namespace> \
+    --docker-server=<container-registry-name>.azurecr.io \
+    --docker-username=<service-principal-ID> \
+    --docker-password=<service-principal-password>
+```
+
+Then, ensure your Deployments specify the secret. Example references already exist:
+
+```yaml
+# k8s/api-deployment.yaml
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: acr-secret
+```
+
+If your manifest uses a different field casing (e.g., `imagepullsecrets`), fix it to `imagePullSecrets`.
+
+### Update ACR URLs in k8s manifests
+
+Update the image fields to point to your ACR:
+
+- In `k8s/api-deployment.yaml` set `image: <your_acr_login_server>/node-api:<tag>`
+- In `k8s/ui-deployment.yaml` set `image: <your_acr_login_server>/react-ui:<tag>`
+
+Keep tags in sync with your GitHub Actions workflow outputs (e.g., `latest`, git SHA, or release tags).
